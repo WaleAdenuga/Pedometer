@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Pedometer: Step Counter</string>
+    <string name="title_home">Today</string>
+    <string name="title_dashboard">Record</string>
+    <string name="title_notifications">User Profile</string>
+    <string name="distance_unit">KM</string>
+    <string name="calorie_unit">Kcal</string>
+    <string name="time_walked">Walking Time</string>
+    <string name="display_steps">Steps</string>
+    <string name="distance_calc">0.00</string>
+    <string name="calorie_calc">0.0</string>
+    <string name="time_calc">0h 0m</string>
+    <string name="time_image">time_image</string>
+    <string name="location_image">location_image</string>
+    <string name="fire_image">fire_image</string>
+    <string name="pause_button">| |         PAUSE</string>
+    <string name="steps_button">Steps</string>
+    <string name="number_steps">0</string>
+    <string name="goal_string">Goal:</string>
+    <string name="goal_counter">4000</string>
+    <string name="total_calories">Kcal</string>
+    <string name="distance_tot">KM</string>
+    <string name="time_total">Walking Time</string>
+    <string name="calorie_calc_tot">0.0</string>
+    <string name="distance_calc_tot">0.0</string>
+    <string name="hour_total">0</string>
+    <string name="hour_unit">h</string>
+    <string name="minute_total">0</string>
+    <string name="minute_unit">m</string>
+    <string name="total_steps">Total Steps</string>
+    <string name="total_steps_calc">0</string>
+    <string name="month_calc">This month</string>
+    <string name="achievements_tab">ACHIEVEMENTS</string>
+
+    <string-array name="menu_items">
+        <item>Espresso</item>
+        <item>Cappucino</item>
+        <item>Latte</item>
+        <item>Yoni Belis</item>
+        <item>Wale Adenuga</item>
+    </string-array>
+
+    <string-array name="menu_items_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="gender_names">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="gender_values">
+        <item>101</item>
+        <item>011</item>
+    </string-array>
+
+    <string-array name="metric_units">
+        <item>kg/cm</item>
+        <item>lb/ft</item>
+    </string-array>
+
+    <string-array name="metric_values">
+        <item>1012</item>
+        <item>1013</item>
+    </string-array>
+
+    <string-array name="week_days">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <string-array name="week_values">
+        <item>101</item>
+        <item>102</item>
+        <item>103</item>
+        <item>104</item>
+        <item>105</item>
+        <item>106</item>
+        <item>107</item>
+    </string-array>
+
+    <string name="number1">How to use?</string>
+    <string name="number2">Steps Counting?</string>
+    <string name="number3">Counting when shaking phone?</string>
+    <string name="number4">Counting when driving?</string>
+    <string name="number5">Accuracy</string>
+    <string name="number6">Placement Suggestion</string>
+    <string name="number7">Battery Saving</string>
+    <string name="number8">Privacy</string>
+    <string name="number9">Calories &amp; Distance</string>
+    <string name="number10">Step Goal</string>
+
+    <string-array name="bigtext1">
+        <item>Click PAUSE button on home page to stop counting and click the resume button to begin again. Please have the phone on hand while walking</item>
+    </string-array>
+
+    <string-array name="bigtext2">
+        <item>Pedometer may be forcibly stopped due to limitation of some devices</item>
+    </string-array>
+
+    <string-array name="bigtext3">
+        <item>Shaking the phone could lead to additional steps being counted. This is as a result of the built-in sensor
+
+        The team will keep working to make sure you have a fantastic user experience</item>
+
+    </string-array>
+
+    <string-array name="bigtext4">
+        <item>In some circumstances, because of the conditions you are driving in and the location of your phone, some steps may be counted. If this persists, the best solution is to pause the step counter while taking a long drive</item>
+    </string-array>
+
+    <string-array name="bigtext5">
+        <item>The built-in sensor of the device in the phone is used to count your steps. Accuracy is based on how good the sensor is</item>
+    </string-array>
+
+    <string-array name="bigtext6">
+        <item>Best places are to keep your phone in your bag, hand and pocket. Do not put it too far from the body or shake too fast or in places with little to no movement</item>
+    </string-array>
+
+    <string-array name="bigtext7">
+        <item>The steps are read from the built-in sensor and not the GPS tracker. You can pause to save battery if you feel concerned</item>
+    </string-array>
+
+    <string-array name="bigtext8">
+        <item>Completely Private. No personal data collected or shared with 3rd party outfits</item>
+    </string-array>
+
+    <string-array name="bigtext9">
+        <item>Height and weight are used to calculate burned calories and distance. Accurate information is advised</item>
+    </string-array>
+
+    <string-array name="bigtext10">
+        <item>We help you set your step goal according to your achieved steps to keep you motivated.</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

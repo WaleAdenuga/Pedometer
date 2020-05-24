@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="#453F3F">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_feet"
+        android:tint="#0F26BD" />
+
+    <TextView
+        android:id="@+id/notification_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/notification_calories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="30dp"
+        android:layout_toStartOf="@id/imageView4"
+        android:text="0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="85dp"
+        android:layout_toStartOf="@id/imageView4"
+        android:src="@drawable/ic_fire"
+        android:tint="#EC7D0C" />
+
+
+<!--    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="250dp"
+        android:layout_height="20dp"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toLeftOf="@id/imageView4" />-->
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="5dp"
+        android:adjustViewBounds="false"
+        android:background="#0774F6"
+        android:src="@drawable/ic_navigate_next_black_24dp"
+        android:tint="#FFF9F9" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="3dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="false"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="10dp"
+        android:background="#F3EBEB"
+        app:srcCompat="?attr/dividerVertical" />
+
+</RelativeLayout>

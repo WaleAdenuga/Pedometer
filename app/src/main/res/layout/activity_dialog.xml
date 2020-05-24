@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal">
+
+    <NumberPicker
+        android:id="@+id/dialog_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
+        android:theme="@style/Theme.Design.Light" />
+
+    <TextView
+        android:id="@+id/decimal_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="69dp"
+        android:text="."
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <NumberPicker
+        android:id="@+id/point_number_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Design.Light"
+        android:nestedScrollingEnabled="true"
+        app:layout_constraintStart_toEndOf="@+id/decimal_text"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/space_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="69dp"
+        android:text="  "
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <NumberPicker
+        android:id="@+id/unit_string_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Design.Light"/>
+</LinearLayout>
