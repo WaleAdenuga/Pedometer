@@ -324,6 +324,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         }
         updateTime();
         updateCertainTime();
+        showNotification();
         super.onResume();
     }
 
@@ -336,6 +337,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         }
         updateTime();
         updateCertainTime();
+        showNotification();
         super.onPause();
     }
 
@@ -348,6 +350,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         }
         updateTime();
         updateCertainTime();
+        showNotification();
         super.onStop();
     }
 
@@ -428,7 +431,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         someHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                someHandler.postDelayed(this,30000);
+                someHandler.postDelayed(this,10000);
                 System.out.println(size_steps.size());
                 updateStepData(String.valueOf(size_steps.size()),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
             }
@@ -464,6 +467,37 @@ public class TodayFragment extends Fragment implements SensorEventListener {
                 }
             });
             queue.add(submit);
+    }
+
+    public void showNotification() {
+
+        if (size_steps.size() >= Integer.parseInt(goal_string.getText().toString())) {
+            Intent intent2 = new Intent(context, MainActivity.class);
+            PendingIntent notificationIntent = PendingIntent.getActivity(context,0,intent2,0);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                int notifyID = 62;
+                String notification_ID = "GoalChannel";
+                CharSequence name = "GoalActivity";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel mChannel = new NotificationChannel(notification_ID, name, importance);
+
+                Notification notification = new NotificationCompat.Builder(context, notification_ID)
+                        .setSmallIcon(R.drawable.ic_feet)
+                        .setContentTitle("CONGRATULATIONS")
+                        .setContentText("You've reached your daily goal for today! Keep up the good work")
+                        .setContentIntent(notificationIntent)
+                        .setAutoCancel(true)
+                        .setOnlyAlertOnce(true)
+                        .build();
+
+                NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                assert mNotificationManager != null;
+                mNotificationManager.createNotificationChannel(mChannel);
+                mNotificationManager.notify(27,notification);
+            }
+        }
     }
 
 
