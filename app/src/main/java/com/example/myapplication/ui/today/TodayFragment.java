@@ -362,7 +362,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             size_steps.add(event.values[0]);
             long trial = steps;
             trial = steps++;
-            stepCounter.setText(String.valueOf(size_steps.size()));
+            stepCounter.setText(String.valueOf(steps));
 
             distance_calculated = (trial * stride_length) / 1000; // distance is no of steps multiplies by stride length (in metres)
             distance_calculated = (float) (Math.round(distance_calculated * 100d) / 100d);
@@ -433,7 +433,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             public void run() {
                 someHandler.postDelayed(this,10000);
                 System.out.println(size_steps.size());
-                updateStepData(String.valueOf(size_steps.size()),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
+                updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
             }
         },10);
 
