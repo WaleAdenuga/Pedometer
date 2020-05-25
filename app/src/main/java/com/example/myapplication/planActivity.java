@@ -128,6 +128,7 @@ public class planActivity extends AppCompatActivity implements SensorEventListen
                 training_Steps.setText(String.valueOf(zero));
                 training_distance.setText(String.valueOf(zero2));
                 training_calories.setText(String.valueOf(zero2));
+                manager.unregisterListener(planActivity.this,sensor1);
             }
         });
 

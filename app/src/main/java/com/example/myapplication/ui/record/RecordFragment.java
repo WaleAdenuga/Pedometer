@@ -55,6 +55,7 @@ public class RecordFragment extends Fragment {
 
     String getSameDay = "https://studev.groept.be/api/a19sd704/getSameDayData/";
     String getMonthData = "https://studev.groept.be/api/a19sd704/getMonthDataDate/";
+    String getLaunchData = "https://studev.groept.be/api/a19sd704/getLaunchData/";
     RequestQueue queue;
 
     String steps_daily;
@@ -111,17 +112,12 @@ public class RecordFragment extends Fragment {
             @Override
             public void onResponse(JSONArray response) {
                 for (int i = 0; i<response.length(); i++) {
-                    String steps = "";
-                    String distance = "";
-                    String calories = "";
+
                     JSONObject obj = null;
                     try {
                         obj = response.getJSONObject(i);
-                        steps += obj.getString("Steps");
                         monthly.add(obj.getString("Steps"));
-                        distance += obj.getString("Distance");
                         dist.add(obj.getString("Distance"));
-                        calories += obj.getString("Calories");
                         calc.add(obj.getString("Calories"));
                         time_d.add(obj.getString("MinsWalked"));
 
@@ -132,18 +128,14 @@ public class RecordFragment extends Fragment {
 
                 for (String k : time_d) {
                     time_m.add(k);
-                    //System.out.println(time_m);
                 }
 
                 for (String s: time_m) {
                     String[] split = s.split(" ");
-                    //System.out.println(Arrays.toString(split));
                     for (String k: split) {
                         hour.add(k);
                     }
                 }
-                System.out.println(hour);
-                System.out.println(hour.size());
 
                 for (int i = 0; i<hour.size(); i++) {
                     if (i % 2 == 1) {
@@ -152,14 +144,11 @@ public class RecordFragment extends Fragment {
                         hour_separated.add(hour.get(i));
                     }
                 }
-                System.out.println(minute_separated);
-                System.out.println(hour_separated);
                 for (String l : minute_separated) {
                     String[] split = l.split("m");
                     for (String i : split) {
                         actual_minute.add(Integer.parseInt(i));
                     }
-                    //System.out.println(Arrays.toString(split));
                 }
 
                 for (String l : hour_separated) {
@@ -167,7 +156,6 @@ public class RecordFragment extends Fragment {
                     for (String i : split) {
                         actual_hour.add(Integer.parseInt(i));
                     }
-                    //System.out.println(Arrays.toString(split));
                 }
 
                 int sum_hours = 0;
@@ -179,12 +167,10 @@ public class RecordFragment extends Fragment {
                     sum_minute += i;
                 }
                 float d = ((float) sum_minute )/ 60;
-                System.out.println(d);
                 BigDecimal decimal = new BigDecimal(String.valueOf(d));
                 int initial_h = decimal.intValue();
                 int final_hours = sum_hours + initial_h;
                 float left = (float) (Math.round((d - initial_h)*100d) / 100d);
-                System.out.println(left);
                 int final_m = Math.round((left * 60));
 
                 String final_time = final_hours + "h " + final_m + "m";
@@ -228,7 +214,6 @@ public class RecordFragment extends Fragment {
         queue.add(jsonArrayRequest);
 
         calendarView = (CalendarView) root.findViewById(R.id.reportCalendar);
-        //calendarView.setMinDate(20200501);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {

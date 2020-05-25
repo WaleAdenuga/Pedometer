@@ -83,6 +83,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
     float weight_launch = 0.0f;
     String weight_launch_string;
     String launch_daily_goal;
+    String sensitivity = "Medium";
 
     float stride_prop_average = 0.414f;
     float average_human_walking_speed = 4.5f;
@@ -96,19 +97,22 @@ public class TodayFragment extends Fragment implements SensorEventListener {
     String addData = "https://studev.groept.be/api/a19sd704/stepsInitial/";
     String updateData = "https://studev.groept.be/api/a19sd704/sensorChangeData/";
     String getData = "https://studev.groept.be/api/a19sd704/getSameDayData/";
+    String getPreference = "https://studev.groept.be/api/a19sd704/getPreference/";
 
     RequestQueue queue;
     Context context;
     int goal_int;
     boolean firstState = false;
     boolean only = false;
+    int check;
+    ArrayList<Float> size_steps = new ArrayList<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_today, container, false);
         updateTime();
-        updateCertainTime();
+
         manager = (SensorManager) this.requireActivity().getSystemService(Context.SENSOR_SERVICE);
         assert manager != null;
         context = getContext();
@@ -119,10 +123,9 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         goal_string = (TextView) root.findViewById(R.id.goal_counter);
         distance_unit = (TextView) root.findViewById(R.id.distance_unit);
 
-        queue = Volley.newRequestQueue(requireContext());
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        queue = Volley.newRequestQueue(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String ID = prefs.getString("ID", null);
-        System.out.println(ID);
 
         String launch_url = launchData + ID;
         final JsonArrayRequest json = new JsonArrayRequest(Request.Method.GET, launch_url, null, new Response.Listener<JSONArray>() {
@@ -139,12 +142,12 @@ public class TodayFragment extends Fragment implements SensorEventListener {
                         weight_launch = Float.parseFloat(weight_launch_string);
                         stride_length = stride_prop_average * height_launch;
 
-                        if (launch_unit.equals("Metric")) {
-                            average_human_walking_speed = 4.5f;
-                        } else if (launch_unit.equals("Imperial")) {
+                        if (launch_unit.equals("Imperial")) {
                             String miles = "Miles";
                             distance_unit.setText(miles);
-                            average_human_walking_speed = 3.1f;
+                            distance_calculated = (float) (Math.round((distance_calculated / 1.609f)*100d)/100d);
+
+                            //average_human_walking_speed = 3.1f;
                         }
 
                     } catch(JSONException e) {
@@ -159,6 +162,66 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             }
         });
         queue.add(json);
+
+
+        Date current = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String system_date = sdf.format(current);
+        String get_url = getData + ID +"/" + system_date;
+        final JsonArrayRequest animate = new JsonArrayRequest(Request.Method.GET, get_url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i<response.length(); i++) {
+                    JSONObject o = null;
+                    try {
+                        o = response.getJSONObject(i);
+                        long steps = Long.parseLong(o.getString("Steps"));
+                        float distance_calculated = Float.parseFloat(o.getString("Distance"));
+                        float calories_calculated = Float.parseFloat(o.getString("Calories"));
+                        String time_display = o.getString("MinsWalked");
+
+
+
+                        stepCounter.setText(String.valueOf(steps));
+                        distance_calc.setText(String.valueOf(distance_calculated));
+                        calorie_calc.setText(String.valueOf(calories_calculated));
+                        time_calc.setText(time_display);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(requireContext(), "Couldn't connect to database",Toast.LENGTH_SHORT).show();
+            }
+        });
+        SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean state = prefss.getBoolean("Performed",false);
+        if (!state) {
+            String add_url = addData + String.valueOf(steps) + "/" + String.valueOf(distance_calculated) + "/" + String.valueOf(calories_calculated) + "/" + system_date + "/" + ID + "/" + time_display;
+            final StringRequest submit = new StringRequest(Request.Method.GET, add_url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    queue.add(animate);
+                    firstState = true;
+                    SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor editor = prefss.edit();
+                    editor.putBoolean("Performed", firstState);
+                    editor.apply();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+            queue.add(submit);
+        }
+        queue.add(animate);
+        updateCertainTime();
+
         String goal_url = goal + ID;
         final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, goal_url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -184,101 +247,18 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         });
         queue.add(jsonArrayRequest);
 
-        Date current = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String system_date = sdf.format(current);
-        System.out.println(system_date);
-        String get_url = getData + ID +"/" + system_date;
-        final JsonArrayRequest animate = new JsonArrayRequest(Request.Method.GET, get_url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                for (int i = 0; i<response.length(); i++) {
-                    JSONObject o = null;
-                    try {
-                        o = response.getJSONObject(i);
-                        steps = Long.parseLong(o.getString("Steps"));
-                        distance_calculated = Float.parseFloat(o.getString("Distance"));
-                        calories_calculated = Float.parseFloat(o.getString("Calories"));
-                        time_display = o.getString("MinsWalked");
-
-                        stepCounter.setText(String.valueOf(steps));
-                        distance_calc.setText(String.valueOf(distance_calculated));
-                        calorie_calc.setText(String.valueOf(calories_calculated));
-                        time_calc.setText(time_display);
-
-                        if (steps == Long.parseLong(goal_string.getText().toString())) {
-                            Intent classified = new Intent(context, MainActivity.class);
-                            PendingIntent notificationIntent = PendingIntent.getActivity(context,0,classified,0);
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-                                int notifyID = 17;
-                                String notification_ID = "GoalReachedChannel";
-                                CharSequence name = "Today_Fragment";
-                                int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                                NotificationChannel mChannel = new NotificationChannel(notification_ID, name, importance);
-
-                                Notification notification = new NotificationCompat.Builder(context, notification_ID)
-                                        .setSmallIcon(R.drawable.ic_feet)
-                                        .setContentTitle("CONGRATULATIONS")
-                                        .setContentText("You've reached your goal for today! You are doing a very good job you!")
-                                        .setContentIntent(notificationIntent)
-                                        .setAutoCancel(true)
-                                        .setOnlyAlertOnce(true)
-                                        .build();
-
-                                NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                                assert mNotificationManager != null;
-                                mNotificationManager.createNotificationChannel(mChannel);
-                                mNotificationManager.notify(24, notification);
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(requireContext(), "Couldn't connect to database",Toast.LENGTH_SHORT).show();
-            }
-        });
-        SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean state = prefss.getBoolean("Performed",false);
-        System.out.println(state);
-        if (!state) {
-            String add_url = addData + String.valueOf(steps) + "/" + String.valueOf(distance_calculated) + "/" + String.valueOf(calories_calculated) + "/" + system_date + "/" + ID + "/" + time_display;
-            final StringRequest submit = new StringRequest(Request.Method.GET, add_url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    firstState = true;
-                    SharedPreferences prefss = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor editor = prefss.edit();
-                    editor.putBoolean("Performed", firstState);
-                    editor.apply();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show();
-                }
-            });
-            queue.add(submit);
-        }
-        queue.add(animate);
 
         distance_calc = (TextView) root.findViewById(R.id.distance_calc);
-        distance_calc.setText(String.valueOf(distance_calculated));
+        //distance_calc.setText(String.valueOf(distance_calculated));
 
         calorie_calc = (TextView) root.findViewById(R.id.calorie_calc);
-        calorie_calc.setText(String.valueOf(calories_calculated));
+        //calorie_calc.setText(String.valueOf(calories_calculated));
 
         time_calc = (TextView) root.findViewById(R.id.time_calc);
-        time_calc.setText(time_display);
+        //time_calc.setText(time_display);
 
         stepCounter = (TextView) root.findViewById(R.id.number_steps);
-        stepCounter.setText(String.valueOf(steps));
+        //stepCounter.setText(String.valueOf(steps));
 
 
 
@@ -289,6 +269,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             public void onClick(View v) {
                 resumeButton.setEnabled(false);
                 pauseButton.setEnabled(true);
+
                 String steps = "Steps";
                 steps_string.setText(steps);
                 manager.registerListener(TodayFragment.this,sensor4,SensorManager.SENSOR_DELAY_NORMAL);
@@ -317,8 +298,10 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             }
         });
 
+        getSensitivity();
+
         if(sensor4 != null) {
-            manager.registerListener(this,sensor4,SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this,sensor4,check);
         } else {
             Toast.makeText(requireContext(),"Sensor not in phone",Toast.LENGTH_LONG).show();
         }
@@ -335,36 +318,36 @@ public class TodayFragment extends Fragment implements SensorEventListener {
     @Override
     public void onResume() {
         if(sensor4 != null) {
-            manager.registerListener(this,sensor4, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this,sensor4, check);
         } else {
             Toast.makeText(requireContext(),"Sensor not in phone",Toast.LENGTH_LONG).show();
         }
         updateTime();
-        //updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
+        updateCertainTime();
         super.onResume();
     }
 
     @Override
     public void onPause() {
         if(sensor4 != null) {
-            manager.registerListener(this,sensor4, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this,sensor4, check);
         } else {
             Toast.makeText(requireContext(),"Sensor stopped working",Toast.LENGTH_LONG).show();
         }
         updateTime();
-        //updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
+        updateCertainTime();
         super.onPause();
     }
 
     @Override
     public void onStop() {
         if(sensor4 != null) {
-            manager.registerListener(this,sensor4, SensorManager.SENSOR_DELAY_NORMAL);
+            manager.registerListener(this,sensor4, check);
         } else {
             Toast.makeText(requireContext(),"Sensor stopped working",Toast.LENGTH_LONG).show();
         }
         updateTime();
-        //updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
+        updateCertainTime();
         super.onStop();
     }
 
@@ -372,23 +355,18 @@ public class TodayFragment extends Fragment implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        int valueg = 0;
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            step_values = event.values;
-            System.out.println(Arrays.toString(event.values));
-            valueg = (int) event.values[0];
+            size_steps.add(event.values[0]);
             long trial = steps;
             trial = steps++;
-            stepCounter.setText(String.valueOf(trial));
+            stepCounter.setText(String.valueOf(size_steps.size()));
 
             distance_calculated = (trial * stride_length) / 1000; // distance is no of steps multiplies by stride length (in metres)
             distance_calculated = (float) (Math.round(distance_calculated * 100d) / 100d);
             distance_calc.setText(String.valueOf(distance_calculated));
-            System.out.println(valueg);
 
             calories_calculated = (0.57f * weight_launch * trial) / 1000; // calories burned is calculated as if normal multiplier depending on weight and number of steps
             calories_calculated = (float) (Math.round(calories_calculated * 100d) / 100d);
-            System.out.println(calories_calculated);
             calorie_calc.setText(String.valueOf(calories_calculated));
 
             decimal_time = (distance_calculated / average_human_walking_speed); // (km/Km/hr), getting walking time in hour
@@ -402,8 +380,44 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             time_calc.setText(final_time);
         }
 
-        updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
+        //updateStepData(String.valueOf(steps),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
 
+    }
+
+    public void getSensitivity() {
+        queue = Volley.newRequestQueue(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String ID = prefs.getString("ID", null);
+        String tests_url = getPreference + ID;
+        final JsonArrayRequest test = new JsonArrayRequest(Request.Method.GET, tests_url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i<response.length(); i++) {
+                    JSONObject o = null;
+                    try {
+                        o = response.getJSONObject(i);
+                        sensitivity = o.getString("Sensitivity");
+                        if (sensitivity.equals("Low")) {
+                            check = SensorManager.SENSOR_STATUS_ACCURACY_LOW;
+                        }
+                        if (sensitivity.equals("Medium")) {
+                            check = SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM;
+                        }
+                        if (sensitivity.equals("High")) {
+                            check = SensorManager.SENSOR_STATUS_ACCURACY_HIGH;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context,"Couldn't get your sensitivity",Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(test);
     }
 
     public void updateCertainTime() {
@@ -412,14 +426,15 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         someHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                someHandler.postDelayed(this,45000);
-                System.out.println(steps);
-                System.out.println(distance_calculated);
-                System.out.println(calories_calculated);
+                someHandler.postDelayed(this,30000);
+                System.out.println(size_steps.size());
+                updateStepData(String.valueOf(size_steps.size()),String.valueOf(distance_calculated), time_display,String.valueOf(calories_calculated));
             }
         },10);
 
     }
+
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -430,7 +445,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
             Date current = Calendar.getInstance().getTime();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String system_date = sdf.format(current);
-            queue = Volley.newRequestQueue(context);
+            //queue = Volley.newRequestQueue(context);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             String ID = prefs.getString("ID", null);
 
@@ -460,8 +475,6 @@ public class TodayFragment extends Fragment implements SensorEventListener {
                 someHandler.postDelayed(this,1000);
                 String midnight = "00:00:02";
 
-                //updateStepData(String.valueOf(steps),String.valueOf(distance_calculated),time_display,String.valueOf(calories_calculated));
-
                 if (current_time.equals(midnight)) {
                     steps = 0;
                     distance_calculated = 0.0f;
@@ -475,7 +488,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
                     Date current = Calendar.getInstance().getTime();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     String system_date = sdf.format(current);
-                    queue = Volley.newRequestQueue(context);
+                    //queue = Volley.newRequestQueue(context);
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                     String ID = prefs.getString("ID", null);
                     String get_url = getData + ID +"/" + system_date;

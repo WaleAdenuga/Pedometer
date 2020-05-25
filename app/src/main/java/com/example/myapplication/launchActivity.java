@@ -165,11 +165,11 @@ public class launchActivity extends AppCompatActivity {
                                 BigDecimal number = new BigDecimal(String.valueOf(feet_number));
                                 int feet = number.intValue();
                                 double actual_feet = feet_number - feet;
-                                double inches = (Math.round(actual_feet*100d)/100d) * 12;
+                                double inches = (Math.round(actual_feet*100d)/100d);
                                 int final_inches = (int) inches;
                                 picker.setValue(feet);
                                 decimal.setValue(final_inches);
-                                decimal.setMaxValue(12);
+                                decimal.setMaxValue(99);
                                 decimal.setMinValue(0);
                                 picker.setMaxValue(10);
                             } else {
@@ -178,7 +178,7 @@ public class launchActivity extends AppCompatActivity {
                                 picker.setMaxValue(10);
                                 double metre_picker = (picker.getValue() / 3.3);
                                 int updated_decimal = (decimal.getValue());
-                                double pick = updated_decimal * 0.025;
+                                double pick = (((double)updated_decimal)/100) / 3.3;
                                 double metre_number = metre_picker + pick;
                                 System.out.println(metre_number);
                                 BigDecimal number = new BigDecimal(String.valueOf(metre_number));

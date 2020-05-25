@@ -405,18 +405,26 @@ public class informationActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.d("TAG","onClick: ");
                             initial_height = "";
+
                             if(unit.getValue() == 0) {
                                 if (decimal.getValue() < 10) {
                                     initial_height = picker.getValue() + ".0" + decimal.getValue() + "  ";
                                     height_choice.setText(initial_height);
+                                    updateHeight(initial_height);
                                 } else {
                                     initial_height = picker.getValue() + "." + decimal.getValue() + "  ";
                                     height_choice.setText(initial_height);
+                                    updateHeight(initial_height);
                                 }
                             }
-                            initial_height = picker.getValue() + "." + decimal.getValue() + " ";
-                            height_choice.setText(initial_height);
-                            updateHeight(initial_height);
+                            if (unit.getValue() == 1) {
+                                double number = (Math.round((decimal.getValue() * 0.08) * 100d)/100d) + picker.getValue();
+                                initial_height = String.valueOf(number);
+                                height_choice.setText(initial_height);
+                                updateHeight(initial_height);
+                            }
+                            /*height_choice.setText(initial_height);
+                            updateHeight(initial_height);*/
 
                         }
                     });

@@ -96,9 +96,7 @@ public class reminderActivity extends AppCompatActivity {
         final boolean lastState = pref.getBoolean("Checked", false);
         activate = (Switch) findViewById(R.id.switch1);
         activate.setChecked(lastState);
-        if (activate.isChecked()) {
-            updateTime();
-        }
+
         activate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -225,10 +223,6 @@ public class reminderActivity extends AppCompatActivity {
         });
 
 
-
-        updateTime();
-
-
     }
 
 //    @Override
@@ -258,21 +252,6 @@ public class reminderActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void updateTime() {
-        final Handler someHandler = new Handler(Looper.getMainLooper());
-        someHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(reminderActivity.this);
-                boolean lastState = pref.getBoolean("Checked", false);
-                system_time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                someHandler.postDelayed(this,1000);
-                time_selected = edit1.getText().toString();
-
-
-            }
-        },10);
-    }
 
     public void dailyNotifications(int hour, int minute, int second) {
 
@@ -296,7 +275,6 @@ public class reminderActivity extends AppCompatActivity {
 
 
     public void updateSelection(String addition) {
-        updateTime();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(reminderActivity.this);
         String ID = prefs.getString("ID", null);
         queue = Volley.newRequestQueue(reminderActivity.this);
