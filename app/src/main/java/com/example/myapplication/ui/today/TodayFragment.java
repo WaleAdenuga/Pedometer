@@ -420,6 +420,8 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         queue.add(test);
     }
 
+
+
     public void updateCertainTime() {
 
         final Handler someHandler = new Handler(Looper.getMainLooper());
