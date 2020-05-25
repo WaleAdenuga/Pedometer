@@ -311,17 +311,14 @@ public class TodayFragment extends Fragment implements SensorEventListener {
         };
 
 
+
         return root;
     }
 
 
     @Override
     public void onResume() {
-        if(sensor4 != null) {
-            manager.registerListener(this,sensor4, check);
-        } else {
-            Toast.makeText(requireContext(),"Sensor not in phone",Toast.LENGTH_LONG).show();
-        }
+
         updateTime();
         updateCertainTime();
         showNotification();
@@ -330,11 +327,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onPause() {
-        if(sensor4 != null) {
-            manager.registerListener(this,sensor4, check);
-        } else {
-            Toast.makeText(requireContext(),"Sensor stopped working",Toast.LENGTH_LONG).show();
-        }
+
         updateTime();
         updateCertainTime();
         showNotification();
@@ -343,11 +336,6 @@ public class TodayFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onStop() {
-        if(sensor4 != null) {
-            manager.registerListener(this,sensor4, check);
-        } else {
-            Toast.makeText(requireContext(),"Sensor stopped working",Toast.LENGTH_LONG).show();
-        }
         updateTime();
         updateCertainTime();
         showNotification();
@@ -471,7 +459,8 @@ public class TodayFragment extends Fragment implements SensorEventListener {
 
     public void showNotification() {
 
-        if (size_steps.size() >= Integer.parseInt(goal_string.getText().toString())) {
+        if (steps >= Integer.parseInt(goal_string.getText().toString())) {
+            Toast.makeText(context,"Goal reached", Toast.LENGTH_SHORT);
             Intent intent2 = new Intent(context, MainActivity.class);
             PendingIntent notificationIntent = PendingIntent.getActivity(context,0,intent2,0);
 
