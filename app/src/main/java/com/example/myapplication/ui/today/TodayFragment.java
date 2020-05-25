@@ -178,7 +178,7 @@ public class TodayFragment extends Fragment implements SensorEventListener {
                         steps = Long.parseLong(o.getString("Steps"));
                         distance_calculated = Float.parseFloat(o.getString("Distance"));
                         calories_calculated = Float.parseFloat(o.getString("Calories"));
-                        String time_display = o.getString("MinsWalked");
+                        time_display = o.getString("MinsWalked");
 
 
 
